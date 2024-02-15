@@ -3,7 +3,6 @@ const axios = require('axios');
 const fs = require('fs').promises;
 require('dotenv').config();
 
-
 const app = express();
 const port = 3000;
 
@@ -11,6 +10,8 @@ app.use(express.json());
 
 app.get('/download/:id', async (req, res) => {
     const id = req.params.id;
+    const username = req.query.username; // Extract username from query parameters
+    const filename = `${username}.pdf`; // Set the filename using the username
     const apiUrl = `https://api.ferretly.com/api/Subjects/${id}/downloadBackgroundReport`;
 
     const headers = {
@@ -29,9 +30,9 @@ app.get('/download/:id', async (req, res) => {
             },
         });
 
-        // Set the response headers for PDF download
+        // Set the response headers for PDF download with the dynamic filename
         res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', 'attachment; filename=backgroundReport.pdf');
+        res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
 
         // Send the PDF as the response
         res.send(response.data);
